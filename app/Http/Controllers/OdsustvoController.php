@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class OdsustvoController extends Controller
 {
-    // Prikazuje sva odsustva
     public function index()
     {
         $odsustva = Odsustvo::all();
@@ -23,7 +22,7 @@ class OdsustvoController extends Controller
     {
         $request->validate([
             'tip_odsustva' => 'required|string',
-            'tip_odsustva' => 'required', // Assuming you have a field to specify the type of leave
+            'tip_odsustva' => 'required', 
         ]);
     
         $userID = 1; // This is your fixed user ID for testing
@@ -36,7 +35,6 @@ class OdsustvoController extends Controller
             return response()->json(['message' => 'Neispravan opseg datuma.'], 400);
         }
     
-        // Limit sick leave to 7 days per month
         if ($request->input('tip_odsustva') == 'Bolovanje') {
             $monthStart = $startDate->copy()->startOfMonth();
             $monthEnd = $startDate->copy()->endOfMonth();
@@ -53,7 +51,6 @@ class OdsustvoController extends Controller
             }
         }
     
-        // Prevent annual leave registration on weekends
         if ($request->input('tip_odsustva') == 'Godisnji Odmor' && ($startDate->isWeekend() || $endDate->isWeekend())) {
             return response()->json(['error' => 'Registrovanje godišnjeg odmora vikendom nije dozvoljeno.'], 400);
         }

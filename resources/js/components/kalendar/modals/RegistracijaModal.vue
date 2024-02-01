@@ -47,6 +47,7 @@
     methods: {
         
             registrujOdsustvo() {
+
         if (!Array.isArray(this.selectedDates) || this.selectedDates.length === 0 || !this.selectedDates[0]) {
             console.error("Morate izabrati datum odsustva.");
             return;
@@ -61,6 +62,7 @@
         axios.post('http://localhost:8000/api/odsustva', odsustvo)
             .then(response => {
                 console.log("Odsustvo je uspešno registrovano.");
+                this.$emit('odsustvo-registered');
                 this.closeModal(); 
                 this.resetModal(); 
             })
@@ -68,6 +70,7 @@
                 console.error("Greška prilikom registracije odsustva:", error);
             });
     },
+
     closeModal() {
         this.$emit("close");
         this.resetModal();
@@ -93,18 +96,18 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  overflow-y: auto; /* Omogućava skrolovanje ako sadržaj premašuje visinu ekrana */
+  overflow-y: auto; 
 }
 
 .modal-content {
   background-color: #fff;
-  width: 90%; /* Prilagodljiva širina za manje ekrane */
-  max-width: 500px; /* Maksimalna širina za veće ekrane */
+  width: 90%; 
+  max-width: 500px;
   margin: 20px;
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  animation: modalFadeIn 0.3s; /* Dodaje efekat postepenog pojavljivanja */
+  animation: modalFadeIn 0.3s;
 }
 
 @keyframes modalFadeIn {
@@ -132,7 +135,7 @@
 }
 
 .modal-body {
-  margin-bottom: 20px; /* Dodaje razmak između tela i futera modala */
+  margin-bottom: 20px; 
 }
 
 .modal-footer {
@@ -145,7 +148,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.2s ease; /* Glatka promena pozadine */
+  transition: background-color 0.2s ease;
 }
 
 button[color="primary"] {
@@ -156,19 +159,19 @@ button[color="primary"] {
 button[color="error"] {
   background-color: #dc3545;
   color: white;
-  margin-left: 10px; /* Dodaje razmak između dugmadi */
+  margin-left: 10px; 
 }
 
 button:hover {
-  opacity: 0.9; /* Blagi efekat na hover */
+  opacity: 0.9; 
 }
 
 select {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  margin-top: 5px; /* Malo razmaka iznad */
-  width: 100%; /* Iskoristite punu širinu */
+  margin-top: 5px; 
+  width: 100%; 
 }
 </style>
 

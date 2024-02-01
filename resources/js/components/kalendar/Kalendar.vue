@@ -18,10 +18,12 @@
           <button class="first-button" @click="openOdsustvoModal">Registruj Odsustvo</button>
           <button class="second-button" @click="sacuvajUArhivu">Sačuvaj u arhivu</button>
         </div>
-        <RegistracijaModal  :isOdsustvoModalOpen="isOdsustvoModalOpen" @close="isOdsustvoModalOpen = false" />
+        <RegistracijaModal   @odsustvo-registered="refreshKalendarAndOdsustva" :isOdsustvoModalOpen="isOdsustvoModalOpen" @close="isOdsustvoModalOpen = false" />
       </div>
     </div>
   </template>
+
+
   
   <script lang="ts">
   import { defineComponent, onMounted, ref } from "vue";
@@ -30,30 +32,35 @@
   import router from '../../services/router';
   
   export default defineComponent({
+
     name: "Kalendar",
     components: {
       RegistracijaModal,
     },
+
+
     setup() {
       const days = ref([]);
       const currentMonth = ref("");
       const isOdsustvoModalOpen = ref(false);
       const odsustva = ref([]);
       const isLoading = ref(true);
+
   
-      const sacuvajUArhivu = async () => {
-  try {
-    const response = await axios.post('http://localhost:8000/api/arhiviraj-odsustva');
-    
-    await fetchOdsustva();
-    await fetchKalendar();
-    console.log(response.data.message);
+      const refreshKalendarAndOdsustva = async () => {
+        await fetchOdsustva(); 
+        await fetchKalendar(); 
+    };
 
-
-  } catch (error) {
-    console.error(error);
-  }
-};
+   const sacuvajUArhivu = () => {
+        axios.post('http://localhost:8000/api/arhiviraj-odsustva')
+            .then(response => {
+                console.log(response.data.message);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
 
   
       const fetchOdsustva = async () => {
@@ -90,7 +97,6 @@
       };
 
       const openOdsustvoModal = () => {
-        console.log("Button clicked"); 
         isOdsustvoModalOpen.value = true;
       };
   
@@ -107,16 +113,16 @@
         const date = new Date(dateString);
         date.setHours(0, 0, 0, 0); 
 
-  const odsustvoObj = odsustva.value.find((odsustvo) => {
-    const odsustvoStartDate = new Date(odsustvo.pocetni_datum);
-    odsustvoStartDate.setHours(0, 0, 0, 0); 
-    let odsustvoEndDate = new Date(odsustvo.krajnji_datum || odsustvo.pocetni_datum);
-    odsustvoEndDate.setHours(23, 59, 59, 999); 
+        const odsustvoObj = odsustva.value.find((odsustvo) => {
+            const odsustvoStartDate = new Date(odsustvo.pocetni_datum);
+            odsustvoStartDate.setHours(0, 0, 0, 0); 
+            let odsustvoEndDate = new Date(odsustvo.krajnji_datum || odsustvo.pocetni_datum);
+            odsustvoEndDate.setHours(23, 59, 59, 999); 
 
-    return date >= odsustvoStartDate && date <= odsustvoEndDate;
-  });
+            return date >= odsustvoStartDate && date <= odsustvoEndDate;
+        });
 
-  return odsustvoObj ? odsustvoObj.tip_odsustva : null;
+        return odsustvoObj ? odsustvoObj.tip_odsustva : null;
 };
 
   
@@ -129,15 +135,17 @@
         isOdsustvo,
         sacuvajUArhivu,
         isLoading,
-        goToArchive
+        goToArchive,
+        refreshKalendarAndOdsustva
       };
     },
   });
+
+  
   </script>
   
   <style scoped>
   .container {
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
