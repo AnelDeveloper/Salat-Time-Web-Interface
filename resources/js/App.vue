@@ -1,23 +1,20 @@
 <template>
     <div>
-        <Main></Main>
+        <MainLayout></MainLayout>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Main from "./components/body/main/Main.vue";
+import MainLayout from "./layouts/MainLayout.vue";
+
 
 export default defineComponent({
     name: "App",
     components: {
-        Main
+        MainLayout
     },
 });
 </script>
 
-<style>
-#app {
-    display: contents;
-}
-</style>
+

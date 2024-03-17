@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import routesMain from "./routes/routesMain";
-//import { useAuthentication } from "./store/authStore";
 
 const routes = routesMain;
 
