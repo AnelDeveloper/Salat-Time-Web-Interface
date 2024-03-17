@@ -1,0 +1,17 @@
+{
+    "selectLocation": "Select a location",
+    "monthlySalat": "Monthly Salat Times",
+    "date": "Date",
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "noSalat": "No Salat times available for the selected month and location.",
+    "readMore": "Read More",
+    "print": "Print",
+    "showMonthly": " Show Monthly Salat",
+    "noDataAvailable": " No Data Available",
+    "ramadanTimeTable": "Ramadan TimeTable"
+      
+}

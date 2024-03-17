@@ -1,29 +1,28 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-6">
-    <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
-      <div class="flex items-center justify-between mb-8 space-x-4">
-        <div class="flex-grow">
-          <LocationSelector @location-selected="updateLocation"/>
+    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-6">
+      <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
+        <div class="flex items-center justify-between mb-8 space-x-4">
+          <div class="flex-grow">
+            <LocationSelector @location-selected="updateLocation"/>
+          </div>
+          <div class="flex-grow">
+            <DateSelector @date-selected="updateDate"/>
+          </div>
         </div>
-        <div class="flex-grow">
-          <DateSelector @date-selected="updateDate"/>
-        </div>
-      </div>
-      <div class="pt-4">
-          <SalatTimesDisplay :selectedLocationId="selectedLocation" :selectedDate="selectedDate" />
-        </div>
-      <div class="flex pt-4 space-x-4  justify-between">
-        <div class="flex-1">
-          <MonthlySalatTimes :selectedLocationId="selectedLocation" :selectedYear="selectedYear" :selectedMonth="selectedMonth" />
-        </div>
+        <div class="salat-times-container">
+  <SalatTimesDisplay :selectedLocationId="selectedLocation" :selectedDate="selectedDate" />
+</div>
 
-        <div class="flex-1">
-          <RamadanTimetable :locationId="selectedLocation" :year="selectedYear" />
-        </div>
+<div v-if="selectedLocation && selectedDate" class="flex justify-between mt-8">
+  <MonthlySalatTimes :selectedLocationId="selectedLocation" :selectedYear="selectedYear" :selectedMonth="selectedMonth" />
+  <RamadanTimetable :locationId="selectedLocation" :year="selectedYear" />
+</div>
+<div v-else class="space">
+</div>
       </div>
     </div>
-  </div>
-</template>
+  </template>
+  
 
   
   
@@ -72,14 +71,20 @@
   </script>
   
   <style scoped>
-  .date-selector,
-  .location-selector {
-  }
 
-
+  .salat-times-container, .monthly-salat-times-container, .ramadan-timetable-container {
+  min-height: 290px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+}
+.space{
+    height: 70px;
+}
   .flex-1 {
-  flex: 1; /* Each child takes equal amount of space */
-  max-width: calc(50% - 2rem) !important; /* Assuming 2rem is your desired space, adjust accordingly */
+  flex: 1; 
+  max-width: calc(50% - 2rem) !important; 
 }
   </style>
   

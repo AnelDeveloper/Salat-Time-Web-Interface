@@ -1,8 +1,10 @@
 <template>
   <div class="monthly-modal">
-    <button @click="showModal = true" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-      Show Monthly Salat Times
-    </button>
+    <button @click="showModal = true" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700">
+        {{ $t('showMonthly') }}
+</button>
+
+
     <MonthlySalatTimesModal 
       :isVisible="showModal" 
       @update:isVisible="showModal = $event"
@@ -61,7 +63,6 @@
   <style scoped>
   .monthly-salat-times-modal {
     /* Add padding to the top of the modal to ensure content visibility */
-    padding-top: 20px;
   }
   </style>
   

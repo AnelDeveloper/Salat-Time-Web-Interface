@@ -1,7 +1,7 @@
 <template>
     <div class="relative date-selector">
       <select v-model="selectedLocationId" @change="emitLocation" class="block appearance-none w-full bg-white border border-gray-300 px-4 py-2 pr-8 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-indigo-300 transition duration-150 ease-in-out">
-        <option disabled value="">Select a location</option>
+        <option disabled value="">{{ $t('selectLocation') }}</option>
         <option v-for="location in locations" :key="location.id" :value="location.id">
           {{ location.name }}
         </option>
@@ -12,43 +12,43 @@
     </div>
   </template>
   
-  
   <script>
+  import { ref, onMounted } from 'vue';
   import axios from 'axios';
   
   export default {
     name: 'LocationSelector',
-    data() {
-      return {
-        selectedLocationId: '',
-        locations: [],
-      };
-    },
-
-    mounted() {
-      this.fetchLocations();
-    },
-
-    methods: {
-      async fetchLocations() {
+    setup(props, { emit }) {
+        
+      const selectedLocationId = ref('');
+      const locations = ref([]);
+  
+       const fetchLocations = async () => {
         try {
           const response = await axios.get('http://localhost:8000/api/locations');
-          this.locations = response.data;
+          locations.value = response.data;
         } catch (error) {
           console.error('Failed to fetch locations:', error);
         }
-      },
-      emitLocation() {
-        this.$emit('locationSelected', this.selectedLocationId);
-      },
+      }
+  
+      onMounted(fetchLocations);
+  
+      const emitLocation = () => {
+        emit('locationSelected', selectedLocationId.value);
+      }
+  
+      return {
+        selectedLocationId,
+        locations,
+        emitLocation,
+      };
     },
   };
   </script>
   
-  
   <style scoped>
   .select {
-    /* Tailwind CSS for select input */
   }
   </style>
   

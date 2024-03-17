@@ -1,42 +1,20 @@
 <template>
     <div v-if="isVisible" class="fixed inset-0 flex justify-center items-center z-50">
-      <div class="bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full">
+      <div v-if="isLoading" class="loading-overlay">
+        <LoadingState />
+      </div>
+      <div class="bg-blue-800 bg-opacity-75 overflow-y-auto h-full w-full">
         <div class="flex justify-center items-center h-full">
           <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 p-4 mt-8">
             <div class="flex justify-between items-center p-5 rounded-t border-b">
-              <h2 class="text-xl font-semibold">Ramadan Timetable (Hijri Dates)</h2>
+              <h2 class="text-xl font-semibold">{{ $t('ramadanTimeTable') }}</h2>
               <button @click="close" class="bg-red-500 hover:bg-red-700 text-white font-bold py-0 px-2 rounded">
                 X
               </button>
             </div>
-  
-            <div class="p-6 space-y-6 overflow-y-auto">
-              <div class="flex justify-between text-sm p-2 font-medium">
-                <span>Date (Hijri)</span>
-                <span>Fajr</span>
-                <span>Dhuhr</span>
-                <span>Asr</span>
-                <span>Maghrib</span>
-                <span>Isha</span>
-              </div>
-              <template v-if="timetable.length > 0">
-                <div v-for="time in timetable" :key="time.date" class="flex justify-between text-sm p-2">
-                  <span>{{ time.date }}</span>
-                  <span>{{ time.fajr }}</span>
-                  <span>{{ time.dhuhr }}</span>
-                  <span>{{ time.asr }}</span>
-                  <span>{{ time.maghrib }}</span>
-                  <span>{{ time.isha }}</span>
-                </div>
-              </template>
-              <div v-else>
-                <p>No Ramadan timetable available for the selected year and location.</p>
-              </div>
-            </div>
+            <Table :class="{ 'blur': isLoading }" :times="renderedTimetable" :allItemsLoaded="allItemsLoaded" :loadMore="loadMore"/>
             <div class="flex justify-end mt-8">
-              <button @click="printTimes" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Print
-              </button>
+              <PdfDownloader :data="timetable" fileName="Ramadan-TimeTable.pdf" />
             </div>
           </div>
         </div>
@@ -44,39 +22,81 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    name: 'RamadanTimetableModal',
-    props: {
-      isVisible: Boolean,
-      timetable: {
-        type: Array,
-        default: () => [],
-      },
+  <script setup>
+  import { ref, watch, computed } from 'vue';
+  import Table from '../../Table/Table.vue';
+  import LoadingState from '../../Spinner/LoadingState.vue';
+  import PdfDownloader from '../../PdfDownloader/PdfDownloader.vue'; 
+  
+  const props = defineProps({
+    isVisible: Boolean,
+    timetable: {
+      type: Array,
+      default: () => [],
     },
-    emits: ['update:isVisible'],
-    methods: {
-      close() {
-        console.log(this.timetable, "dasdasdasda")
-
-        this.$emit('update:isVisible', false);
-      },
-      printTimes() {
-        window.print();
-      },
-    },
-  };
+  });
+  
+  const emit = defineEmits(['update:isVisible']);
+  
+  const renderedTimetable = ref([]);
+  const allItemsLoaded = ref(false);
+  const itemsPerLoad = 10;
+  const isLoading = ref(false);
+  
+  const close = () => {
+    emit('update:isVisible', false);
+  }
+  
+  const printTimes = () => {
+    window.print();
+  }
+  
+  const loadMore = () => {
+    isLoading.value = true;
+    setTimeout(() => {
+      const currentLength = renderedTimetable.value.length;
+      const itemsToAdd = props.timetable.slice(currentLength, currentLength + itemsPerLoad);
+  
+      renderedTimetable.value = [...renderedTimetable.value, ...itemsToAdd];
+  
+      if (renderedTimetable.value.length >= props.timetable.length) {
+        allItemsLoaded.value = true;
+      }
+  
+      isLoading.value = false;
+    }, 1000);
+  }
+  
+  const remainingTimetable = computed(() => props.timetable.slice(renderedTimetable.value.length));
+  
+  watch(() => props.timetable, (newValue) => {
+    renderedTimetable.value = newValue.slice(0, itemsPerLoad);
+    allItemsLoaded.value = newValue.length <= itemsPerLoad;
+  }, { immediate: true });
   </script>
   
   <style scoped>
   .bg-white {
-    /* Adjust the modal height if necessary */
     height: auto;
   }
   .p-6 .space-y-6 {
-    /* Adjust the content height if necessary */
     max-height: 400px;
     overflow-y: auto;
+  }
+  
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Optional: overlay background */
+  }
+  .blur {
+    filter: blur(8px);
   }
   </style>
   
