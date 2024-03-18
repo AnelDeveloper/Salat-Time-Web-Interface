@@ -8,11 +8,12 @@
 
 <script lang="ts">
     import { defineComponent} from "vue";
-    import HomePage from "../pages/home/HomePage.vue";
+    import HomePage from "../pages/Home/HomePage.vue";
 
     export default defineComponent({
         name: "MainLayout",
         components: {
+            HomePage
         },
     });
 

@@ -1,4 +1,4 @@
-import HomePage from '../../pages/home/HomePage.vue';
+import HomePage from '../../pages/Home/HomePage.vue';
 
 
 export default  [
