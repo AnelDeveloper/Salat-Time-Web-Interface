@@ -25,13 +25,4 @@ Set up the environment variables by creating a .env file for Laravel.
 Run the Laravel development server using the following command in a separate terminal:
 php artisan serve
 
-Technologies Used
-React: JavaScript library for building user interfaces.
-TypeScript: For improved developer experience and code quality.
-Redux: State management.
-Vite: Build tool that provides fast development server and optimized production build.
-React-Redux: Official React bindings for Redux to connect React components with Redux store.
-React-Router: Declarative routing for React applications.
-
-
 This project is licensed under the Anel's :DDDDDD License.
