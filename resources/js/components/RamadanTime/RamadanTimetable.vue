@@ -1,9 +1,8 @@
 <template>
     <div class="ramadan-container">
       <button @click="showModal = true" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700 ramadan-button">
-        Ramadan Timetable
+       {{ $t('ramdanTimeTable') }}
       </button>
-  
       <RamadanTimeModal 
         :isVisible="showModal" 
         @update:isVisible="showModal = $event"
@@ -16,9 +15,9 @@
   
   <script>
   import { ref, watch, onMounted } from 'vue';
-  import axios from 'axios';
   import RamadanTimeModal from './Modal/RamadanTimeModal.vue';
-  
+  import apiClient from '../../Api/Api';
+
   export default {
     name: 'RamadanTimetable',
     components: {
@@ -40,7 +39,7 @@
     
       const fetchRamadanTimetable = async () => {
         try {
-          const response = await axios.get('http://localhost:8000/api/ramadan-timetable', {
+          const response = await apiClient.get('/api/ramadan-timetable', {
             params: {
               locationId: props.locationId,
               year: props.year,

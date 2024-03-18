@@ -16,7 +16,8 @@
   import axios from 'axios';
   import { ref, watch, onMounted } from 'vue';
   import MonthlySalatTimesModal from './Modal/MonthlySalatTimesModal.vue';
-  
+  import apiClient from '../../Api/Api';
+
   export default {
     name: 'MonthlySalatTimes',
     components: {
@@ -29,10 +30,12 @@
       const showModal = ref(false);
   
       const fetchMonthlySalatTimes = async () => {
+        console.log(props.selectedLocationId, props.selectedMonth, props.selectedYear)
+
         if (!props.selectedLocationId || !props.selectedYear || !props.selectedMonth) return;
   
         try {
-          const response = await axios.get('http://localhost:8000/api/monthly-salat-times', {
+          const response = await apiClient.get(`/api/monthly-salat-times`, {
             params: {
               locationId: props.selectedLocationId,
               year: props.selectedYear,

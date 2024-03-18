@@ -1,14 +1,14 @@
 <template>
   <LoadingState v-if="isLoading" />
-  <div v-else-if="salatTimes.length > 0" class="mt-8 flex flex-wrap justify-center">
-    <div v-for="time in salatTimes" :key="time.id" class="salat-time-card">
-      <h3 class="salat-day">Day: {{ formatDate(time.date) }}</h3>
-      <div class="salat-time-detail">Sunrise: <span>{{ time.sunrise }}</span></div>
-      <div class="salat-time-detail">Fajr: <span>{{ time.fajr }}</span></div>
-      <div class="salat-time-detail">Dhuhr: <span>{{ time.dhuhr }}</span></div>
-      <div class="salat-time-detail">Asr: <span>{{ time.asr }}</span></div>
-      <div class="salat-time-detail">Maghrib: <span>{{ time.maghrib }}</span></div>
-      <div class="salat-time-detail">Isha: <span>{{ time.isha }}</span></div>
+  <div v-else-if="salatTimeForSelectedDate" class="mt-8 flex flex-wrap justify-center">
+    <div class="salat-time-card">
+      <h3 class="salat-day">Day: {{ formatDate(salatTimeForSelectedDate.date) }}</h3>
+      <div class="salat-time-detail">Sunrise: <span>{{ salatTimeForSelectedDate.sunrise }}</span></div>
+      <div class="salat-time-detail">Fajr: <span>{{ salatTimeForSelectedDate.fajr }}</span></div>
+      <div class="salat-time-detail">Dhuhr: <span>{{ salatTimeForSelectedDate.dhuhr }}</span></div>
+      <div class="salat-time-detail">Asr: <span>{{ salatTimeForSelectedDate.asr }}</span></div>
+      <div class="salat-time-detail">Maghrib: <span>{{ salatTimeForSelectedDate.maghrib }}</span></div>
+      <div class="salat-time-detail">Isha: <span>{{ salatTimeForSelectedDate.isha }}</span></div>
       <DateNavigator @changeDay="navigateDays" />
     </div>
   </div>
@@ -18,57 +18,73 @@
 </template>
 
   
-  <script setup>
-  import { ref, watch, onMounted } from 'vue';
-  import axios from 'axios';
-  import LoadingState from '../Spinner/LoadingState.vue';
-  import DateNavigator from '../Navigation/DateNavigator.vue';
-  
-  const props = defineProps(['selectedLocationId', 'selectedDate']);
-  const salatTimes = ref([]);
-  const isLoading = ref(false);
+<script setup>
+import { ref, watch, computed, onMounted } from 'vue';
+import LoadingState from '../Spinner/LoadingState.vue';
+import DateNavigator from '../Navigation/DateNavigator.vue';
+import apiClient from '../../Api/Api';
 
-  const formatDate = (dateString) => {
+
+const props = defineProps(['selectedLocationId', 'selectedDate']);
+const monthlySalatTimes = ref([]);
+const isLoading = ref(false);
+
+const selectedDate = ref(props.selectedDate || new Date().toISOString().split('T')[0]);
+
+const currentMonthYear = computed(() => {
+  const year = selectedDate.value.substring(0, 4);
+  const month = selectedDate.value.substring(5, 7);
+  return `${year}-${month}`;
+});
+
+const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 };
 
+const salatTimeForSelectedDate = computed(() => {
+  return monthlySalatTimes.value.find(time => time.date === selectedDate.value);
+});
 
-const selectedDate = ref(props.selectedDate || new Date().toISOString().split('T')[0]);
 
 const navigateDays = (change) => {
   const currentDate = new Date(selectedDate.value);
   currentDate.setDate(currentDate.getDate() + change);
   selectedDate.value = currentDate.toISOString().split('T')[0];
-  fetchSalatTimes(); 
 };
 
-const fetchSalatTimes = async () => {
-  if (!props.selectedLocationId || !selectedDate.value) return;
+const fetchMonthlySalatTimes = async () => {
+  if (!props.selectedLocationId && !props.selectedDate) {
+    return;
+  }
 
   isLoading.value = true;
-
   try {
-    const response = await axios.get('http://localhost:8000/api/salat-times', { 
-      params: { locationId: props.selectedLocationId, date: selectedDate.value } 
+    const response = await apiClient.get(`/api/monthly-salat-times`, {
+      params: {
+        locationId: props.selectedLocationId,
+        year: currentMonthYear.value.substring(0, 4),
+        month: currentMonthYear.value.substring(5, 7)
+      }
     });
-    salatTimes.value = response.data;
+    monthlySalatTimes.value = response.data.map(entry => ({ ...entry, monthYear: currentMonthYear.value }));
   } catch (error) {
     console.error("Failed to fetch Salat times:", error);
-    salatTimes.value = [];
+    monthlySalatTimes.value = [];
   } finally {
     isLoading.value = false;
   }
 };
 
-watch([() => props.selectedLocationId, selectedDate], fetchSalatTimes, { immediate: true });
+watch([() => props.selectedLocationId && props.selectedDate, currentMonthYear], fetchMonthlySalatTimes, { immediate: true });
 
-  
-  onMounted(() => {
-    fetchSalatTimes();
-  });
-  </script>
+watch(() => props.selectedDate, (newDate) => {
+  selectedDate.value = newDate || new Date().toISOString().split('T')[0];
+});
+
+</script>
+
   
   <style scoped>
   .salat-time-card {
@@ -127,4 +143,3 @@ watch([() => props.selectedLocationId, selectedDate], fetchSalatTimes, { immedia
     }
   }
   </style>
-  

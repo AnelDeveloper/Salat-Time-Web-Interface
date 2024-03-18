@@ -27,7 +27,7 @@ class SalatTimesController extends Controller {
     public function getMonthlySalatTimes(Request $request) {
         $locationId = $request->input('locationId');
         $year = $request->input('year');
-        $month = $request->input('month');
+        $month = $request->input('month');  
     
         $startDate = "{$year}-{$month}-01";
         $endDate = date("Y-m-t", strtotime($startDate));

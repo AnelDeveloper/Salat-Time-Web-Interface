@@ -11,13 +11,13 @@
           </div>
           <div class="table-header">
             <div class="text-sm md:text-base font-semibold w-full text-gray-800 bg-gradient-to-r from-gray-50 to-gray-200 py-2 px-4 rounded-lg shadow header">
-              <span class="header-item">{{ $t('date') }}</span>
-              <span class="header-item">{{ $t('sunrise') }}</span>
-              <span class="header-item">{{ $t('fajr') }}</span>
-              <span class="header-item">{{ $t('dhuhr') }}</span>
-              <span class="header-item">{{ $t('asr') }}</span>
-              <span class="header-item">{{ $t('maghrib') }}</span>
-              <span class="header-item">{{ $t('isha') }}</span>
+              <div class="header-item date">{{ $t('date') }}</div>
+              <div class="header-item sunrise">{{ $t('sunrise') }}</div>
+              <div class="header-item fajr">{{ $t('fajr') }}</div>
+              <div class="header-item dhuhr">{{ $t('dhuhr') }}</div>
+              <div class="header-item asr">{{ $t('asr') }}</div>
+              <div class="header-item maghrib">{{ $t('maghrib') }}</div>
+              <div class="header-item isha">{{ $t('isha') }}</div>
             </div>
           </div>
           <div class="table-content overflow-y-auto">
@@ -57,14 +57,10 @@
   renderedSalatTimes.value = []; 
   allItemsLoaded.value = false;
 };
-  
-
 
   </script>
-  
+
   <style scoped>
-
-
 .bg-white {
   max-height: 90vh;
   overflow-y: auto;
@@ -127,65 +123,24 @@
   box-sizing: border-box; 
 }
 
-.header-item:first-child, .item-detail:first-child,
-.header-item:last-child, .item-detail:last-child {
-  padding: 0 0px; 
+.header-item {
+  flex: 1;
+  padding: 0 6px;
+  box-sizing: border-box;
 }
-.header-item:nth-child(2), .item-detail:nth-child(2) {
-  margin-left: 50px;
 
-}
-.header-item:nth-child(3), .item-detail:nth-child(3) {
-  margin-left: 0px;
-
-}
-.header-item:nth-child(4), .item-detail:nth-child(4) {
-  margin-left: 10px;
-
-}
-.header-item:nth-child(5), .item-detail:nth-child(5) {
-  margin-left: 0px;
-
-}
-.header-item:nth-child(6), .item-detail:nth-child(6) {
-  margin-right: 10px;
-
-}
-.header-item:nth-child(7), .item-detail:nth-child(7) {
-  margin-right: 0px;
-
-}
+.date, .isha { padding: 0; }
+.sunrise { margin-left: 50px; }
+.fajr, .asr { margin-left: 0px; }
+.dhuhr { margin-left: 10px; }
+.maghrib { margin-right: 10px; }
+.isha { margin-right: 0px; }
 
 @media (max-width: 1280px) {
-  .header-item:first-child, .item-detail:first-child,
-.header-item:last-child, .item-detail:last-child {
-  padding: 0 0px; 
-}
-.header-item:nth-child(2), .item-detail:nth-child(2) {
-  margin-left: 30px;
-
-}
-.header-item:nth-child(3), .item-detail:nth-child(3) {
-  margin-left: 0px;
-
-}
-.header-item:nth-child(4), .item-detail:nth-child(4) {
-  margin-left: 0px;
-
-}
-.header-item:nth-child(5), .item-detail:nth-child(5) {
-  margin-left: 0px;
-
-}
-.header-item:nth-child(6), .item-detail:nth-child(6) {
-  margin-right: 10px;
-
-}
-.header-item:nth-child(7), .item-detail:nth-child(7) {
-  margin-right: 0px;
-
+  .sunrise { margin-left: 30px; }
+  .dhuhr, .fajr, .asr, .maghrib { margin-left: 0px; }
+  .isha { margin-right: 15px; }
 }
 
-  }
   </style>
   
