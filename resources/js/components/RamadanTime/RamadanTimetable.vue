@@ -1,7 +1,7 @@
 <template>
     <div class="ramadan-container">
       <button @click="showModal = true" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700 ramadan-button">
-       {{ $t('ramdanTimeTable') }}
+       {{ $t('ramadanTimeTable') }}
       </button>
       <RamadanTimeModal 
         :isVisible="showModal" 

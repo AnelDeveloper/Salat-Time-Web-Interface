@@ -13,33 +13,43 @@
   </template>
   
   <script>
-  import axios from 'axios';
-  import { ref, watch, onMounted } from 'vue';
+  import { ref, watch, onMounted, computed } from 'vue';
   import MonthlySalatTimesModal from './Modal/MonthlySalatTimesModal.vue';
   import apiClient from '../../Api/Api';
-
+  
   export default {
     name: 'MonthlySalatTimes',
     components: {
-      MonthlySalatTimesModal 
+      MonthlySalatTimesModal,
     },
     props: ['selectedLocationId', 'selectedYear', 'selectedMonth'],
   
     setup(props) {
       const monthlySalatTimes = ref([]);
       const showModal = ref(false);
+      
+      const {currentYear, currentMonth} = (() => {
+        const now = new Date();
+        return {
+          currentYear: now.getFullYear().toString(),
+          currentMonth: ('0' + (now.getMonth() + 1)).slice(-2)};
+        })();
+        
+        const selectedYear = computed(() => props.selectedYear || currentYear);
+        const selectedMonth = computed(() => props.selectedMonth || currentMonth);
+
   
       const fetchMonthlySalatTimes = async () => {
-        console.log(props.selectedLocationId, props.selectedMonth, props.selectedYear)
-
-        if (!props.selectedLocationId || !props.selectedYear || !props.selectedMonth) return;
+        console.log(props.selectedLocationId, selectedMonth.value, selectedYear.value)
+  
+        if (!props.selectedLocationId) return;
   
         try {
           const response = await apiClient.get(`/api/monthly-salat-times`, {
             params: {
               locationId: props.selectedLocationId,
-              year: props.selectedYear,
-              month: props.selectedMonth,
+              year: selectedYear.value,
+              month: selectedMonth.value,
             },
           });
           monthlySalatTimes.value = response.data;
@@ -48,12 +58,11 @@
         }
       };
   
-      watch(() => [props.selectedLocationId, props.selectedYear, props.selectedMonth], fetchMonthlySalatTimes);
-  
-      onMounted(fetchMonthlySalatTimes);
-  
+      watch([() => props.selectedLocationId, selectedYear, selectedMonth], fetchMonthlySalatTimes, { immediate: true });
+    
       return { monthlySalatTimes, showModal };
     },
   };
   </script>
+  
   

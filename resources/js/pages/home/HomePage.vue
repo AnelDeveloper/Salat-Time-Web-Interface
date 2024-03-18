@@ -12,7 +12,7 @@
         <div class="salat-times-container">
           <SalatTimesDisplay :selectedLocationId="selectedLocation" :selectedDate="selectedDate"  :selectedYear="selectedYear" :selectedMonth="selectedMonth"/>
         </div>
-        <div v-if="selectedLocation && selectedDate" class="flex justify-between mt-8">
+        <div v-if="selectedLocation " class="flex justify-between mt-8">
           <MonthlySalatTimes :selectedLocationId="selectedLocation" :selectedYear="selectedYear" :selectedMonth="selectedMonth" />
           <RamadanTimetable :locationId="selectedLocation" :year="selectedYear" />
         </div>

@@ -24,12 +24,11 @@ import LoadingState from '../Spinner/LoadingState.vue';
 import DateNavigator from '../Navigation/DateNavigator.vue';
 import apiClient from '../../Api/Api';
 
-
 const props = defineProps(['selectedLocationId', 'selectedDate']);
 const monthlySalatTimes = ref([]);
 const isLoading = ref(false);
+
 const selectedDate = ref(props.selectedDate || new Date().toISOString().split('T')[0]);
-let isFirstSelection = true; 
 
 const currentMonthYear = computed(() => {
   const year = selectedDate.value.substring(0, 4);
@@ -43,6 +42,7 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-US', options);
 };
 
+
 const salatTimeForSelectedDate = computed(() => {
   return monthlySalatTimes.value.find(time => time.date === selectedDate.value);
 });
@@ -50,12 +50,19 @@ const salatTimeForSelectedDate = computed(() => {
 
 const navigateDays = (change) => {
   const currentDate = new Date(selectedDate.value);
+  const originalMonth = currentDate.getMonth();
   currentDate.setDate(currentDate.getDate() + change);
-  selectedDate.value = currentDate.toISOString().split('T')[0];
+  const newMonth = currentDate.getMonth();
+  if (originalMonth === newMonth) {
+    selectedDate.value = currentDate.toISOString().split('T')[0];
+  } else {
+    return;
+  }
 };
 
+
 const fetchMonthlySalatTimes = async () => {
-  if (!props.selectedLocationId || !props.selectedDate) {
+  if (!props.selectedLocationId) {
     return;
   }
 
@@ -77,20 +84,14 @@ const fetchMonthlySalatTimes = async () => {
   }
 };
 
-
-watch([() => props.selectedLocationId && props.selectedDate, currentMonthYear], ([hasLocationAndDate, currentMonthYear], [oldHasLocationAndDate, oldMonthYear]) => {
-  if (hasLocationAndDate && (isFirstSelection || oldMonthYear !== currentMonthYear)) {
-    fetchMonthlySalatTimes();
-    isFirstSelection = false; 
-  }
-}, { immediate: true });
-
+watch([currentMonthYear, () => props.selectedLocationId], fetchMonthlySalatTimes, { immediate: true });
 
 watch(() => props.selectedDate, (newDate) => {
   selectedDate.value = newDate || new Date().toISOString().split('T')[0];
 });
 
 </script>
+
 
   
   <style scoped>
