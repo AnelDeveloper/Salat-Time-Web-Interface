@@ -15,9 +15,12 @@ Clone the repository to your local machine:
 git clone https://github.com/AnelDeveloper/Salat-Time-Web-Interface
 
 npm install
+npm run dev
+
 Set up the environment variables by creating a .env file for Laravel.
 
 Run the Laravel development server using the following command in a separate terminal:
+
 php artisan serve
 
 This project is licensed under the Anel's :DDDDDD License.
