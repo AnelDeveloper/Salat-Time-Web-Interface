@@ -93,7 +93,6 @@ export default {
   text-align: center;
 }
 
-/* Ensure that first and last child have padding/margins that align with the design */
 .header-item:first-child, .item-detail:first-child {
   text-align: left;
 }

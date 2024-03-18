@@ -1,23 +1,21 @@
 <template>
-  <div class="monthly-modal">
-    <button @click="showModal = true" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700">
+    <div class="monthly-modal">
+      <button @click="showModal = true" class="bg-emerald-500 text-white px-4 py-2 rounded hover:bg-emerald-700">
         {{ $t('showMonthly') }}
-</button>
-
-
-    <MonthlySalatTimesModal 
-      :isVisible="showModal" 
-      @update:isVisible="showModal = $event"
-      :monthlySalatTimes="monthlySalatTimes"
-      class="monthly-salat-times-modal" 
-    />
-  </div>
+      </button>
+      <MonthlySalatTimesModal 
+        :isVisible="showModal" 
+        @update:isVisible="showModal = $event"
+        :monthlySalatTimes="monthlySalatTimes"
+        class="monthly-salat-times-modal" 
+      />
+    </div>
   </template>
   
   <script>
   import axios from 'axios';
   import { ref, watch, onMounted } from 'vue';
-  import MonthlySalatTimesModal from './Modal/MonthlySalatTimesModal.vue'
+  import MonthlySalatTimesModal from './Modal/MonthlySalatTimesModal.vue';
   
   export default {
     name: 'MonthlySalatTimes',
@@ -47,10 +45,6 @@
         }
       };
   
-      const showMonthlySalatTimes = () => {
-        showModal.value = true; 
-      };
-  
       watch(() => [props.selectedLocationId, props.selectedYear, props.selectedMonth], fetchMonthlySalatTimes);
   
       onMounted(fetchMonthlySalatTimes);
@@ -59,10 +53,4 @@
     },
   };
   </script>
-  
-  <style scoped>
-  .monthly-salat-times-modal {
-    /* Add padding to the top of the modal to ensure content visibility */
-  }
-  </style>
   

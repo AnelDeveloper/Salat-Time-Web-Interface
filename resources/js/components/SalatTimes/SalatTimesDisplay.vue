@@ -42,9 +42,7 @@
         params: { locationId: props.selectedLocationId, date: props.selectedDate } 
       });
       salatTimes.value = response.data;
-      console.log(salatTimes.value, " evvv")
     } catch (error) {
-      console.error('Error fetching Salat times:', error);
       salatTimes.value = [];
     } finally {
       isLoading.value = false;
@@ -91,20 +89,20 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: #374151; /* Optional: Adjust text color to fit your design */
+  color: #374151; 
 
 }
 
   
   @media (max-width: 768px) {
     .salat-time-card {
-      width: calc(100% / 2 - 2rem); /* Two items per row for smaller screens */
+      width: calc(100% / 2 - 2rem); 
     }
   }
   
   @media (max-width: 480px) {
     .salat-time-card {
-      width: 100%; /* Single item per row for very small screens */
+      width: 100%; 
       margin: 1rem 0;
     }
   }

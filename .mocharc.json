@@ -1,0 +1,6 @@
+{
+    "require": ["@babel/register"],
+    "extensions": ["js", "vue"],
+    "spec": "resources/js/components/**/*.spec.js"
+  }
+  

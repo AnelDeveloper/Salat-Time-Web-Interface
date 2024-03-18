@@ -14,20 +14,21 @@
             </div>
             <Table :class="{ 'blur': isLoading }" :times="renderedSalatTimes" :allItemsLoaded="allItemsLoaded" :loadMore="loadMore"/>
             <div class="flex justify-end mt-8">
-                <PdfDownloader :data="monthlySalatTimes" fileName="Monthly-Salat-Times.pdf" />
+              <PdfDownloader :data="monthlySalatTimes" fileName="Monthly-Salat-Times.pdf" />
             </div>
           </div>
         </div>
       </div>
     </div>
   </template>
+
   
   <script setup>
-  import { ref, watch , computed} from 'vue';
+  import { ref, watch, computed } from 'vue';
   import Table from '../../Table/Table.vue';
   import LoadingState from '../../Spinner/LoadingState.vue';
   import PdfDownloader from '../../PdfDownloader/PdfDownloader.vue';
-
+  
   const props = defineProps({
     isVisible: Boolean,
     monthlySalatTimes: {
@@ -43,40 +44,32 @@
   const itemsPerLoad = 10;
   const isLoading = ref(false);
   
-
-  const close = () => {
-    emit('update:isVisible', false);
-  }
+ const close = () => {
+  emit('update:isVisible', false);
+  renderedSalatTimes.value = []; 
+  allItemsLoaded.value = false;
+};
   
-
-  console.log(props.renderedSalatTimes, " gege")
-
   const loadMore = () => {
-  isLoading.value = true; 
-
-  const itemsToAdd = remainingSalatTimes.value.slice(0, itemsPerLoad);
-
-  setTimeout(() => {
-
-    renderedSalatTimes.value = [...renderedSalatTimes.value, ...itemsToAdd];
-    if (renderedSalatTimes.value.length >= props.monthlySalatTimes.length) {
-      allItemsLoaded.value = true;
-    }
-    isLoading.value = false; 
-  }, 1000); 
-}
-
-    const remainingSalatTimes = computed(() => props.monthlySalatTimes.slice(renderedSalatTimes.value.length));
-
-    watch(() => props.monthlySalatTimes, (newValue) => {
+    isLoading.value = true; 
+  
+    const itemsToAdd = remainingSalatTimes.value.slice(0, itemsPerLoad);
+  
+    setTimeout(() => {
+      renderedSalatTimes.value = [...renderedSalatTimes.value, ...itemsToAdd];
+      if (renderedSalatTimes.value.length >= props.monthlySalatTimes.length) {
+        allItemsLoaded.value = true;
+      }
+      isLoading.value = false; 
+    }, 1000); 
+  };
+  
+  const remainingSalatTimes = computed(() => props.monthlySalatTimes.slice(renderedSalatTimes.value.length));
+  
+  watch(() => props.monthlySalatTimes, (newValue) => {
     renderedSalatTimes.value = newValue.slice(0, itemsPerLoad);
     allItemsLoaded.value = newValue.length <= itemsPerLoad;
-  }, 
-  { immediate: true }
-  
-  );
-
-
+  }, { immediate: true });
   </script>
   
   <style scoped>
@@ -98,6 +91,7 @@
     align-items: center;
   }
   .blur {
-  filter: blur(8px);
+    filter: blur(8px);
   }
   </style>
+  

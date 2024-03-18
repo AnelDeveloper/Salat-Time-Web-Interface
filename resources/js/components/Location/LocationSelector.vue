@@ -47,8 +47,5 @@
   };
   </script>
   
-  <style scoped>
-  .select {
-  }
-  </style>
+
   

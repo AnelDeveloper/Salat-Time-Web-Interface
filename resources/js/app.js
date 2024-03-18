@@ -1,5 +1,4 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
-import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./services/router";
 import i18n from './services/i18n.ts'; 

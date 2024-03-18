@@ -44,28 +44,28 @@
   const isLoading = ref(false);
   
   const close = () => {
-    emit('update:isVisible', false);
-  }
-  
-  const printTimes = () => {
-    window.print();
-  }
+  emit('update:isVisible', false);
+  renderedTimetable.value = []; 
+  allItemsLoaded.value = false;
+}
+
   
   const loadMore = () => {
-    isLoading.value = true;
-    setTimeout(() => {
-      const currentLength = renderedTimetable.value.length;
-      const itemsToAdd = props.timetable.slice(currentLength, currentLength + itemsPerLoad);
-  
-      renderedTimetable.value = [...renderedTimetable.value, ...itemsToAdd];
-  
-      if (renderedTimetable.value.length >= props.timetable.length) {
-        allItemsLoaded.value = true;
-      }
-  
-      isLoading.value = false;
-    }, 1000);
-  }
+  isLoading.value = true;
+  setTimeout(() => {
+    const currentLength = renderedTimetable.value.length;
+    const itemsToAdd = props.timetable.slice(currentLength, currentLength + itemsPerLoad);
+
+    renderedTimetable.value = [...renderedTimetable.value, ...itemsToAdd];
+
+    if (renderedTimetable.value.length >= props.timetable.length) {
+      allItemsLoaded.value = true;
+    }
+
+    isLoading.value = false;
+  }, 1000);
+}
+
   
   const remainingTimetable = computed(() => props.timetable.slice(renderedTimetable.value.length));
   
@@ -93,7 +93,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Optional: overlay background */
   }
   .blur {
     filter: blur(8px);
