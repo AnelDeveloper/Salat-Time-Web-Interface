@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-6">
-      <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
+      <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8 salat-container">
         <div class="flex items-center justify-between mb-8 space-x-4">
           <div class="flex-grow">
             <LocationSelector @location-selected="updateLocation"/>
@@ -67,18 +67,27 @@
   
   <style scoped>
   .salat-times-container, .monthly-salat-times-container, .ramadan-timetable-container {
-    min-height: 290px; 
-    display: flex;
+    min-height: 350px; 
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
   }
+  .salat-times-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+
+}
   .space {
     height: 70px;
   }
   .flex-1 {
     flex: 1; 
     max-width: calc(50% - 2rem) !important; 
+  }
+
+  .salat-container{
+    max-width: 500px;
   }
   </style>
   
