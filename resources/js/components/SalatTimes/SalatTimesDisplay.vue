@@ -28,8 +28,8 @@ import apiClient from '../../Api/Api';
 const props = defineProps(['selectedLocationId', 'selectedDate']);
 const monthlySalatTimes = ref([]);
 const isLoading = ref(false);
-
 const selectedDate = ref(props.selectedDate || new Date().toISOString().split('T')[0]);
+let isFirstSelection = true; 
 
 const currentMonthYear = computed(() => {
   const year = selectedDate.value.substring(0, 4);
@@ -55,7 +55,7 @@ const navigateDays = (change) => {
 };
 
 const fetchMonthlySalatTimes = async () => {
-  if (!props.selectedLocationId && !props.selectedDate) {
+  if (!props.selectedLocationId || !props.selectedDate) {
     return;
   }
 
@@ -77,7 +77,14 @@ const fetchMonthlySalatTimes = async () => {
   }
 };
 
-watch([() => props.selectedLocationId && props.selectedDate, currentMonthYear], fetchMonthlySalatTimes, { immediate: true });
+
+watch([() => props.selectedLocationId && props.selectedDate, currentMonthYear], ([hasLocationAndDate, currentMonthYear], [oldHasLocationAndDate, oldMonthYear]) => {
+  if (hasLocationAndDate && (isFirstSelection || oldMonthYear !== currentMonthYear)) {
+    fetchMonthlySalatTimes();
+    isFirstSelection = false; 
+  }
+}, { immediate: true });
+
 
 watch(() => props.selectedDate, (newDate) => {
   selectedDate.value = newDate || new Date().toISOString().split('T')[0];

@@ -14,7 +14,7 @@
   
   <script>
   import { ref, onMounted } from 'vue';
-  import axios from 'axios';
+  import apiClient from '../../Api/Api';
   
   export default {
     name: 'LocationSelector',
@@ -25,7 +25,7 @@
   
        const fetchLocations = async () => {
         try {
-          const response = await axios.get('http://localhost:8000/api/locations');
+          const response = await apiClient.get('/api/locations');
           locations.value = response.data;
         } catch (error) {
           console.error('Failed to fetch locations:', error);
