@@ -82,6 +82,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .header, .item {
   display: flex;
@@ -93,7 +94,6 @@ export default {
   text-align: center;
 }
 
-/* Ensure that first and last child have padding/margins that align with the design */
 .header-item:first-child, .item-detail:first-child {
   text-align: left;
 }
@@ -101,4 +101,5 @@ export default {
 .header-item:last-child, .item-detail:last-child {
   text-align: right;
 }
+
 </style>
