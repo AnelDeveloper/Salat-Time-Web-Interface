@@ -12,8 +12,8 @@
   
       <div class="flex flex-col w-full h-full bg-white rounded-lg">
         <RecycleScroller :items="times" :item-size="50" class="flex-grow" key-field="date">
-          <template v-slot="{ item }">
-            <div class="flex justify-between p-3 hover:bg-gray-50 item">
+          <template v-slot="{ item }" >
+            <div class="flex justify-between p-3 bg-gray-100 item">
               <span class="item-detail">{{ item.date }}</span>
               <span class="item-detail">{{ item.fajr }}</span>
               <span class="item-detail">{{ item.dhuhr }}</span>

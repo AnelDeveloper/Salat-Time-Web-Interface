@@ -6,7 +6,7 @@
       <div class="bg-blue-800 bg-opacity-75 overflow-y-auto h-full w-full">
         <div class="flex justify-center items-center h-full">
           <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 p-4 mt-8">
-            <div class="flex justify-between items-center p-5 rounded-t border-b">
+            <div class="flex justify-between items-center p-5 pr-0 rounded-t border-b">
               <h2 class="text-xl font-semibold">{{ $t('ramadanTimeTable') }}</h2>
               <button @click="close" class="bg-red-500 hover:bg-red-700 text-white font-bold py-0 px-2 rounded">
                 X
