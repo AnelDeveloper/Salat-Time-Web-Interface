@@ -1,6 +1,11 @@
 Salat-Time-Web-Interface
+
+
 ⭐⭐⭐⭐⭐
+
 Features
+
+
 Users can pick their location from the provided list.
 Users can select a specific date to view the Salat times for that day.
 Upon selecting the location and date, the web interface displays the corresponding Salat times.
