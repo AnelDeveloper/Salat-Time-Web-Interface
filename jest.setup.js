@@ -8,11 +8,9 @@ global.IntersectionObserver = class {
     }
   
     unobserve() {
-      // You can add logic here if needed for cleanup
     }
   
     disconnect() {
-      // You can add logic here if needed for cleanup
     }
   };
 

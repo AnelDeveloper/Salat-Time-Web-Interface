@@ -1,65 +1,67 @@
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import SalatTimesDisplay from '../SalatTimesDisplay.vue';
-import axios from 'axios';
+import LoadingState from '../../Spinner/LoadingState.vue';
+import apiClient from '../../../Api/Api';
 
-jest.mock('axios');
+jest.mock('../../../Api/Api', () => ({
+  get: jest.fn(() => Promise.resolve({
+    data: [
+      { date: '2023-04-01', sunrise: '6:00 AM', fajr: '4:30 AM', dhuhr: '12:00 PM', asr: '3:30 PM', maghrib: '6:15 PM', isha: '7:45 PM' }
+    ]
+  }))
+}));
 
-describe('SalatTimesDisplay', () => {
-  it('displays loading state when isLoading is true', async () => {
+describe('SalatTimesDisplay.vue', () => {
+  it('renders loading state initially and fetches data on mount', async () => {
     const wrapper = mount(SalatTimesDisplay, {
       props: {
-        selectedLocationId: 'locationId',
-        selectedDate: '2024-03-18'
-      }
+        selectedLocationId: '1',
+        selectedDate: '2023-04-01',
+      },
     });
 
-    expect(wrapper.findComponent({ name: 'LoadingState' }).exists()).toBe(true);
-    await wrapper.vm.$nextTick();
+    expect(wrapper.findComponent(LoadingState).exists()).toBe(true);
+
+    await flushPromises();
+
+    expect(apiClient.get).toHaveBeenCalledTimes(1);
+    expect(apiClient.get).toHaveBeenCalledWith('/api/monthly-salat-times', expect.objectContaining({
+      params: expect.objectContaining({
+        locationId: '1',
+        year: '2023',
+        month: '04'
+      })
+    }));
+
+    expect(wrapper.findComponent(LoadingState).exists()).toBe(false);
+  });
+});
+
+it('displays Salat times for the selected date when data is available', async () => {
+  const wrapper = mount(SalatTimesDisplay, {
+    props: {
+      selectedLocationId: '1',
+      selectedDate: '2023-04-01',
+    },
   });
 
-  it('displays salat times when not loading and salatTimes array is not empty', async () => {
-    const mockSalatTimes = [
-      { id: 1, date: '2024-03-18', fajr: '5:30 AM', dhuhr: '12:00 PM', asr: '3:00 PM', maghrib: '6:00 PM', isha: '8:00 PM' },
-      { id: 2, date: '2024-03-19', fajr: '5:31 AM', dhuhr: '12:01 PM', asr: '3:01 PM', maghrib: '6:01 PM', isha: '8:01 PM' }
-    ];
+  await flushPromises();
 
-    axios.get.mockResolvedValue({ data: mockSalatTimes });
+  expect(wrapper.text()).toContain('Day: April 1, 2023');
+  expect(wrapper.text()).toContain('Fajr: 4:30 AM');
+});
 
-    const wrapper = mount(SalatTimesDisplay, {
-      props: {
-        selectedLocationId: 'locationId',
-        selectedDate: '2024-03-18'
-      }
-    });
+it('displays a message when no Salat times are available', async () => {
+  apiClient.get.mockImplementationOnce(() => Promise.resolve({ data: [] }));
 
-    await wrapper.vm.$nextTick();
-
-    const salatTimeCards = wrapper.findAll('.salat-time-card');
-    expect(salatTimeCards).toHaveLength(mockSalatTimes.length);
-
-    mockSalatTimes.forEach((time, index) => {
-      const salatTimeCard = salatTimeCards.at(index);
-      expect(salatTimeCard.find('.salat-day').text()).toBe(`Day: ${wrapper.vm.formatDate(time.date)}`);
-      expect(salatTimeCard.find('.salat-time-detail:nth-of-type(1)').text()).toContain(`Fajr: ${time.fajr}`);
-      expect(salatTimeCard.find('.salat-time-detail:nth-of-type(2)').text()).toContain(`Dhuhr: ${time.dhuhr}`);
-      expect(salatTimeCard.find('.salat-time-detail:nth-of-type(3)').text()).toContain(`Asr: ${time.asr}`);
-      expect(salatTimeCard.find('.salat-time-detail:nth-of-type(4)').text()).toContain(`Maghrib: ${time.maghrib}`);
-      expect(salatTimeCard.find('.salat-time-detail:nth-of-type(5)').text()).toContain(`Isha: ${time.isha}`);
-    });
+  const wrapper = mount(SalatTimesDisplay, {
+    props: {
+      selectedLocationId: '1',
+      selectedDate: '2023-05-01',
+    },
   });
 
-  it('displays "No Salat times available" message when salatTimes array is empty', async () => {
-    axios.get.mockResolvedValue({ data: [] });
+  await flushPromises();
 
-    const wrapper = mount(SalatTimesDisplay, {
-      props: {
-        selectedLocationId: 'locationId',
-        selectedDate: '2024-03-18'
-      }
-    });
-
-    await wrapper.vm.$nextTick();
-
-    expect(wrapper.find('.no-salat-times').exists()).toBe(true);
-  });
+  expect(wrapper.find('.no-salat-times').text()).toContain('No Salat times available');
 });

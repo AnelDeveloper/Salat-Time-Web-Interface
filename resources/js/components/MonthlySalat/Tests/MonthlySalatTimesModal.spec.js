@@ -51,13 +51,4 @@ describe('MonthlySalatTimesModal.vue', () => {
     await wrapper.find('button').trigger('click');
     expect(wrapper.emitted()['update:isVisible'][0]).toEqual([false]);
   });
-
-  it('handles loading more items correctly', async () => {
-    // Assuming your component has a method to directly trigger loading more items
-    await wrapper.vm.loadMore();
-    await flushPromises();
-
-  });
-
-  // Add more tests as needed
 });

@@ -1,57 +1,61 @@
-import { mount } from '@vue/test-utils'
-import RamadanTimeModal from '../Modal/RamadanTimeModal.vue'
-import flushPromises from 'flush-promises'
+import { mount, flushPromises } from '@vue/test-utils';
+import RamadanTimetable from '../RamadanTimetable.vue';
+import apiClient from '../../../Api/Api'; 
 
-jest.mock('../../Table/Table.vue', () => ({
-  name: 'Table',
-  props: ['times', 'allItemsLoaded', 'loadMore', 'class'],
-  template: '<div><slot></slot></div>'
-}))
-jest.mock('../../Spinner/LoadingState.vue', () => ({
-  name: 'LoadingState',
-  template: '<div>Loading...</div>'
-}))
-jest.mock('../../PdfDownloader/PdfDownloader.vue', () => ({
-  name: 'PdfDownloader',
-  props: ['data', 'fileName'],
-  template: '<div></div>'
-}))
+jest.mock('../../../Api/Api', () => ({
+  get: jest.fn(() => Promise.resolve({
+    data: [{ date: '2023-04-01', fajr: '5:00 AM', maghrib: '6:30 PM' }]
+  }))
+}));
 
-describe('RamadanTimeModal.vue', () => {
-    let wrapper
-  
-    beforeEach(() => {
-      wrapper = mount(RamadanTimeModal, {
-        props: {
-          isVisible: true,
-          timetable: Array(20).fill().map((_, index) => ({
-            date: `2023-04-${String(index + 1).padStart(2, '0')}`,
-            time: '5:00 AM'
-          })),
+describe('RamadanTimetable.vue', () => {
+  it('renders and can show the modal', async () => {
+    const wrapper = mount(RamadanTimetable, {
+      props: {
+        locationId: '1',
+        year: '2023',
+      },
+      global: {
+        mocks: {
+          $t: msg => msg, 
         },
-        global: {
-          mocks: {
-            $t: (msg) => msg, 
-          }
-        }
-      })
-    })
-  
-    it('displays loading when isLoading is true', async () => {
-      wrapper.vm.loadMore()
-      await flushPromises()
-  
-      expect(wrapper.findComponent({ name: 'LoadingState' }).exists()).toBe(true)
-    })
-  
-    it('displays the correct number of times initially', () => {
-      expect(wrapper.vm.renderedTimetable.length).toBe(10)
-    })
-      
-  
-    it('closes the modal when close button is clicked', async () => {
-      await wrapper.find('button').trigger('click')
-        expect(wrapper.emitted()['update:isVisible'][0]).toEqual([false])
-    })
-  })
-  
+      },
+    });
+
+    await flushPromises();
+
+    const button = wrapper.find('button.ramadan-button');
+    expect(button.exists()).toBe(true);
+    expect(button.text()).toBe('ramadanTimeTable');
+
+    await button.trigger('click');
+    expect(wrapper.vm.showModal).toBe(true);
+  });
+
+  it('fetches Ramadan timetable on mount and updates the timetable data', async () => {
+    const wrapper = mount(RamadanTimetable, {
+      props: {
+        locationId: '1',
+        year: '2023',
+      },
+      global: {
+        mocks: {
+          $t: msg => msg, 
+        },
+      },
+    });
+
+    await flushPromises();
+
+    expect(apiClient.get).toHaveBeenCalledTimes(2);
+    expect(apiClient.get).toHaveBeenCalledWith('/api/ramadan-timetable', {
+      params: {
+        locationId: '1',
+        year: '2023',
+      },
+    });
+
+    expect(wrapper.vm.ramadanTimetable).toEqual([{ date: '2023-04-01', fajr: '5:00 AM', maghrib: '6:30 PM' }]);
+  });
+
+});
